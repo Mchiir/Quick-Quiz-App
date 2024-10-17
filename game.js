@@ -20,7 +20,7 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
         return res.json()
     })
     .then(loadedQuestions => {
-        // console.log(loadedQuestions.results)
+        console.log(loadedQuestions)
         questions = loadedQuestions.results.map(loadedQuestion => {
             const formattedQuestion = {
                 question: loadedQuestion.question
@@ -61,7 +61,7 @@ startGame = () => {
 
 getNewQuestion = () => {
 
-    if (availableQuestions.length === 0 || questionCounter >= MAX_QUESTIONS){
+    if (availableQuestions.length === 0 || questionCounter >= MAX_QUESTIONS) {
         // go to the end page
         localStorage.setItem("mostRecentScore", score)
         return window.location.assign("end.html")
@@ -92,22 +92,22 @@ choices.forEach(choice => {
         const selectedChoice = e.target
         const selectedAnswer = selectedChoice.dataset["number"]
 
-        const classToApply = 
+        const classToApply =
             selectedAnswer == currentQuestion.answer ? 'correct' : 'incorrect'
 
-            if(classToApply == 'correct'){
-                incrementScore(CORRECT_BONUS)
-            }
-            
-            selectedChoice.parentElement.classList.add(classToApply)
-            setTimeout(() => {
-                selectedChoice.parentElement.classList.remove(classToApply)
-                getNewQuestion()
-            }, 1000)
+        if (classToApply == 'correct') {
+            incrementScore(CORRECT_BONUS)
+        }
+
+        selectedChoice.parentElement.classList.add(classToApply)
+        setTimeout(() => {
+            selectedChoice.parentElement.classList.remove(classToApply)
+            getNewQuestion()
+        }, 1000)
     })
 })
 
-incrementScore = num =>{
+incrementScore = num => {
     score += num
     scoreText.innerText = score
 }
