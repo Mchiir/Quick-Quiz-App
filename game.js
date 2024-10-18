@@ -42,7 +42,12 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
         })
         startGame()
     }).catch(err => {
-        console.error(err)
+        // Check if the page has already been reloaded
+    if (!sessionStorage.getItem('reloaded')) {
+        window.location.reload()
+        //this flag is set as an indicator of reload
+        sessionStorage.setItem('reloaded', 'true');
+        }
     })
 
 //CONSTANTS
