@@ -13,7 +13,6 @@ let score = 0
 let questionCounter = 0
 let availableQuestions = {}
 
-
 let questions = []
 fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple")
     .then(res => {
@@ -42,12 +41,13 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
         })
         startGame()
     }).catch(err => {
+        ()=> sessionStorage.clear()
         // Check if the page has already been reloaded
-    if (!sessionStorage.getItem('reloaded')) {
-        window.location.reload()
-        //this flag is set as an indicator of reload
-        sessionStorage.setItem('reloaded', 'true');
-        }
+        if (!sessionStorage.getItem('reloaded')) {
+            window.location.reload()
+            sessionStorage.setItem('reloaded', 'true');
+            // //this flag is set as an indicator of reload
+            }
     })
 
 //CONSTANTS
