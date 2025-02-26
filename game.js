@@ -14,12 +14,37 @@ let questionCounter = 0
 let availableQuestions = {}
 
 let questions = []
+let reloads = sessionStorage.getItem('reloads') ? parseInt(sessionStorage.getItem('reloads')) : 0
+
+const fetchQuestions = () => {
+
+    const fetchTimeout = setTimeout(() => {
+        if(reloads < 3){
+            reloads++
+            sessionStorage.setItem('reloads', reloads)
+            window.location.reload()
+        }else{
+            console.error('Max reload attempts reached. Unable to fetch questions.')
+        }
+    }, 10000);
+
+
+
 fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple")
     .then(res => {
+        clearTimeout(fetchTimeout);
         return res.json()
     })
     .then(loadedQuestions => {
-        console.log(loadedQuestions)
+        // console.log(loadedQuestions)
+        if(!loadedQuestions.results || loadedQuestions.results.length === 0){
+            throw new Error("No Questions received")
+        }
+
+        reloads = 0 // resetting to 0, if loadedQuestions received
+        sessionStorage.setItem('reloads', reloads)
+
+
         questions = loadedQuestions.results.map(loadedQuestion => {
             const formattedQuestion = {
                 question: loadedQuestion.question
@@ -39,16 +64,25 @@ fetch("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=mul
 
             return formattedQuestion
         })
+
+
         startGame()
     }).catch(err => {
-        ()=> sessionStorage.clear()
-        // Check if the page has already been reloaded
-        if (!sessionStorage.getItem('reloaded')) {
+        clearTimeout(fetchTimeout)
+        console.error("Error fetching questions:", err)
+
+        if(reloads < 3){
+            reloads++
+            sessionStorage.setItem('reloads', reloads)
             window.location.reload()
-            sessionStorage.setItem('reloaded', 'true');
-            // //this flag is set as an indicator of reload
-            }
-    })
+        } else{
+            console.error("Max reload attempts reached. Unable to fetch questions.");
+        }
+
+    });
+}
+
+fetchQuestions()
 
 //CONSTANTS
 const CORRECT_BONUS = 10
