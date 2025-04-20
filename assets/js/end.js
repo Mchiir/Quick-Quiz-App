@@ -17,7 +17,7 @@ saveHighScore = e =>{
     e.preventDefault()
 
     const score = {
-        score: Math.floor(Math.random() * 100),
+        score: Math.round(mostRecentScore * 100 /30), // as test=3Q, each correct=10pts
         name: username.value
     }
     highScores.push(score)
